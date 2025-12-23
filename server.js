@@ -24,7 +24,7 @@ app.use(cors({
 
 app.use(express.json());
 
-app.get('/health', (req, res) => res.status(200).json({ status: 'healthy' }));
+app.get('/', (req, res) => res.status(200).json({ status: 'healthy' }));
 app.use('/api', router);
 
 app.listen(port, host, () => console.log(`Server is running on ${host}:${port}`));
