@@ -1,5 +1,6 @@
 const express = require('express');
-const port = 3000;
+const port = process.env.PORT || 8080;
+const host = process.env.HOST || '0.0.0.0';
 const cors = require('cors');
 const router = require('./src/routes');
 
@@ -23,7 +24,7 @@ app.use(cors({
 
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('API is running'));
+app.get('/health', (req, res) => res.status(200).json({ status: 'healthy' }));
 app.use('/api', router);
 
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+app.listen(port, host, () => console.log(`Server is running on ${host}:${port}`));
