@@ -4,12 +4,9 @@ const postModel = require('../models/post.model');
 const getAllComments = async (req, res) => {
     try {
         const comments = await commentModel.getAllComments();
-        res.status(200).json(comments);
+        res.success(comments);
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 
@@ -19,17 +16,12 @@ const getCommentById = async (req, res) => {
         const commentDetail = await commentModel.getCommentById(id);
 
         if (!commentDetail) {
-            res.status(404).json({
-                message: 'Comment not found'
-            })
+            return res.error('Comment not found', 404);
         }
 
-        res.status(200).json(commentDetail);
+        res.success(commentDetail);
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 
@@ -38,18 +30,13 @@ const getCommentsByPostId = async (req, res) => {
         const { postId } = req.params;
         const post = await postModel.getPostById(postId);
         if (!post) {
-            return res.status(404).json({
-                message: 'Post not found. Cannot find comments for non-existent post.'
-            });
+            return res.error('Post not found. Cannot find comments for non-existent post.', 404);
         }
 
         const comment = await commentModel.getCommentsByPostId(postId);
-        res.status(200).json(comment);
+        res.success(comment);
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 
@@ -57,27 +44,15 @@ const createComment = async (req, res) => {
     try {
         const { postId, content } = req.body;
 
-        if (!postId || !content) {
-            return res.status(400).json({
-                message: 'PostId and content are required'
-            });
-        }
-
         const post = await postModel.getPostById(postId);
         if (!post) {
-            return res.status(404).json({
-                message: 'Post not found. Cannot create comment for non-existent post.'
-            });
+            return res.error('Post not found. Cannot create comment for non-existent post.', 404);
         }
 
-
         const newComment = await commentModel.createComment({postId, content});
-        res.status(201).json(newComment);
+        res.success(newComment, 201);
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 
@@ -86,26 +61,15 @@ const updateComment = async (req, res) => {
         const { id } = req.params;
         const { content } = req.body;
 
-        if(!content) {
-            return res.status(400).json({
-                message: 'Content is required'
-            })
-        }
-
         const updateComment = await commentModel.updateComment({ id, content });
 
         if (!updateComment) {
-            return res.status(404).json({
-                message: 'Comment not found'
-            })
+            return res.error('Comment not found', 404);
         }
 
-        res.status(200).json(updateComment);
+        res.success(updateComment);
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 
@@ -115,17 +79,12 @@ const deleteComment = async (req, res) => {
         const deletedComment = await commentModel.deleteComment(id);
 
         if (!deletedComment) {
-            return res.status(404).json({
-                message: 'Comment not found'
-            })
+            return res.error('Comment not found', 404);
         }
 
-        res.status(204).end()
+        res.status(204).end();
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 

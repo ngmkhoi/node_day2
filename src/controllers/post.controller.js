@@ -2,53 +2,35 @@ const postModel = require('../models/post.model');
 
 const getAllPosts = async (req, res) => {
     try {
-        const posts = await postModel.getAllPosts()
-        res.status(200).json(posts);
+        const posts = await postModel.getAllPosts();
+        res.success(posts);
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 
 const getPostById = async (req, res) => {
     try {
         const { id } = req.params;
-        const postDetail = await postModel.getPostById(id)
+        const postDetail = await postModel.getPostById(id);
 
         if (!postDetail) {
-            res.status(404).json({
-                message: 'Post not found'
-            })
+            return res.error('Post not found', 404);
         }
 
-        res.status(200).json(postDetail);
+        res.success(postDetail);
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 
 const createPost = async (req, res) => {
     try {
         const { title, content } = req.body;
-
-        if (!title || !content) {
-            res.status(400).json({
-                message: 'Title and content are required'
-            })
-        }
-
         const newPost = await postModel.createPost({title, content});
-        res.status(201).json(newPost);
+        res.success(newPost, 201);
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 
@@ -56,28 +38,15 @@ const updatePost = async (req, res) => {
     try {
         const { id } = req.params;
         const { title, content } = req.body;
-
-        if (!title || !content) {
-            res.status(400).json({
-                message: 'Title and content are required'
-            })
-        }
-
         const updatedPost = await postModel.updatePost({ id, title, content });
-        console.log('updatedPost', updatedPost);
 
         if(!updatedPost) {
-            res.status(404).json({
-                message: 'Post not found'
-            })
+            return res.error('Post not found', 404);
         }
 
-        res.status(200).json(updatedPost);
+        res.success(updatedPost);
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 
@@ -87,17 +56,12 @@ const deletePost = async (req, res) => {
         const deletedPost = await postModel.deletePost(id);
 
         if(!deletedPost) {
-            res.status(404).json({
-                message: 'Post not found'
-            })
+            return res.error('Post not found', 404);
         }
 
-        res.status(204).end()
+        res.status(204).end();
     } catch (error) {
-        res.status(500).json({
-            message: 'Server error',
-            error: error.message
-        })
+        res.error(error.message, 500);
     }
 }
 

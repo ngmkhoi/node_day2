@@ -1,4 +1,4 @@
-const {loadDB, saveDB} = require("../../utils/jsonDB");
+const {loadDB, saveDB} = require("../utils/jsonDB");
 const RESOURCE_NAME = 'comments';
 
 const getAllComments = async () => {
@@ -20,7 +20,7 @@ const createComment = async (data) => {
     const commentId = comments.length === 0 ? 1 : Math.max(...comments.map(comment => comment.id)) + 1;
     const newComment = {
         id: commentId,
-        postId: data.postId,
+        postId:  parseInt(data.postId),
         content: data.content,
         createdAt: new Date().toISOString()
     }
