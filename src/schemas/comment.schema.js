@@ -1,4 +1,4 @@
 module.exports = {
-    postId: {required: true, type: 'string'},
+    postId: {required: true, type: 'number'},
     content: {required: true, type: 'string', minLength: 1, maxLength: 500},
 }
